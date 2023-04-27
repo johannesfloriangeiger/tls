@@ -48,11 +48,12 @@ openssl x509 \
     -out "$DATA"/localhost.crt
 ```
 
-Run 
+Run
 =
 
 ```
 docker run -p 8443:443 -v ./data:/etc/tls -v ./conf:/etc/nginx -v ./src:/var/www nginx
 ```
 
-Install `data/root-ca.crt` in your Browser and open https://localhost:8443: You see the page `src/index.html` or run `curl -v --cacert data/root-ca.crt https://localhost:8443` to achieve the same on the command line.
+Install `data/root-ca.crt` in your Browser and open https://localhost:8443: You see the page `src/index.html` or
+run `curl -v --cacert data/root-ca.crt https://localhost:8443` to achieve the same on the command line.

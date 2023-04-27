@@ -1,6 +1,13 @@
 Setup
 =
 
+Application
+-
+
+```
+mvn clean install
+```
+
 Certificates
 -
 
@@ -55,8 +62,10 @@ openssl pkcs12 \
 keytool -importkeystore \
     -srckeystore "$DATA"/localhost.p12 \
     -srcstoretype PKCS12 \
+    -srcstorepass changeit \
     -destkeystore "$DATA"/localhost.jks \
-    -deststoretype JKS
+    -deststoretype JKS \
+    -deststorepass changeit
 ```
 
 Tomcat
@@ -71,24 +80,25 @@ wget -P data https://raw.githubusercontent.com/apache/tomcat/main/conf/server.xm
 Remove default `Connector` and replace with
 
 ```
-    <Connector
-      protocol="HTTP/1.1"
-      port="8443"
-      maxThreads="200"
-      maxParameterCount="1000"
-      scheme="https"
-      secure="true"
-      SSLEnabled="true"
-      keystoreFile="/usr/local/tomcat/conf/localhost.jks"
-      clientAuth="false"
-      sslProtocol="TLS"/>
+<Connector
+    protocol="HTTP/1.1"
+    port="8443"
+    maxThreads="200"
+    maxParameterCount="1000"
+    scheme="https"
+    secure="true"
+    SSLEnabled="true"
+    keystoreFile="/usr/local/tomcat/conf/localhost.jks"
+    clientAuth="false"
+    sslProtocol="TLS"/>
 ```
 
-Run 
+Run
 =
 
 ```
-docker run -p 8443:8443 -v ./data/:/usr/local/tomcat/conf tomcat:9.0
+docker run -p 8443:8443 -v ./data/:/usr/local/tomcat/conf/ -v ./target/servlet.war:/usr/local/tomcat/webapps/servlet.war tomcat:9.0
 ```
 
-Install `data/root-ca.crt` in your Browser and open https://localhost:8443: You get a Tomcat "Not Found" page but the certificate is valid or run `curl -v --cacert data/root-ca.crt https://localhost:8443` to achieve the same on the command line.
+Install `data/root-ca.crt` in your Browser and open https://localhost:8443/servlet/: You see "Hello Tomcat!" or
+run `curl -v --cacert data/root-ca.crt https://localhost:8443/servlet/` to achieve the same on the command line.
